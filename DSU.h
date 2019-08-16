@@ -2,9 +2,11 @@
 #define DSU_H
 #include <vector>
 
+//a class for disjoint set union data structure
 class DSU
 {
     public:
+        //constructs a DSU with n groups each with 1 element
         DSU(int n)
         {
             countOfGroups = n;
@@ -13,9 +15,28 @@ class DSU
             for(int i = 0; i < n; i++)
                   parents[i] = i;
         }
+
+        //add a new group to the DSU
         void MakeSet();
+
+        //used to merge groups to which id1 and id2 belong
         void Union(int id1, int id2);
+
+        //finds the root of the group to which id belongs
         int Find(int id);
+
+        //returns the number of elements in the group to which id belongs
+        int groupSize(int id);
+
+        //return true if id belongs to a valid element
+        bool isValidId(int id)
+        {
+            if(id >= 0 && id < parents.size())
+                return 1;
+            return 0;
+        }
+
+        //returns number of disjoint sets
         int getCountOfGroups()
         {
             return countOfGroups;
@@ -35,6 +56,8 @@ void DSU::MakeSet()
 
 void DSU::Union(int id1, int id2)
 {
+    if( !(isValidId(id1) && isValidId(id2)) )
+        return;
     int group1 = Find(id1);
     int group2 = Find(id2);
     if(group1 == group2)
@@ -54,10 +77,19 @@ void DSU::Union(int id1, int id2)
 
 int DSU::Find(int id)
 {
+   if(!isValidId(id))
+      return -1;
    int parent = parents[id];
    if(parent == id)
       return parent;
    else return parents[id] = Find(parent);
+}
+
+int DSU::groupSize(int id)
+{
+    if(!isValidId(id))
+      return -1;
+    return ranks[Find(id)];
 }
 
 #endif // DSU_H
